@@ -1,4 +1,5 @@
 import m from 'mithril';
+import Model from '../model';
 
 export const Body = () => {
   return {
@@ -16,7 +17,7 @@ export const Body = () => {
                 {p.image}
               </a>
             </td>
-            <td style="width:10%">{`v${p.ver_id}`}</td>
+            {/* <td style="width:10%">{`v${p.ver_id}`}</td> */}
             <td style="width:25%">
               {groupby
                 .filter(g => g.key === p.type)
@@ -24,7 +25,12 @@ export const Body = () => {
                   return <span class={`badge ${s.badge} m-0`}>{s.key}</span>;
                 })}
             </td>
-            <td style="width:10%">{p.doc_id}</td>
+            <td style="width:20%">{p.doc_id}</td>
+            <td style="width:10%">
+              <a href="#" onclick={event => Model.download(event, p)}>
+                <i class="fa fa-download"></i>
+              </a>
+            </td>
           </tr>
         );
       });

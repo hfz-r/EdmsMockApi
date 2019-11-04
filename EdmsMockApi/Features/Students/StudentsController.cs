@@ -34,9 +34,9 @@ namespace EdmsMockApi.Features.Students
         /// <response code="401">Unauthorized</response>
         [HttpGet]
         [Route("get-profiles", Name = nameof(GetProfiles))]
-        [ProducesResponseType(typeof(ProfilesRootObject), (int) HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ErrorsRootObject), (int) HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(string), (int) HttpStatusCode.Unauthorized)]
+        [ProducesResponseType(typeof(ProfilesRootObject), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
         [GetRequestsErrorInterceptorActionFilter]
         public async Task<IActionResult> GetProfiles([FromQuery] GetProfiles.Query query)
         {
@@ -68,17 +68,17 @@ namespace EdmsMockApi.Features.Students
         /// <response code="401">Unauthorized</response>
         [HttpGet]
         [Route("get-profile-fields/{id}", Name = nameof(GetProfileFields))]
-        [ProducesResponseType(typeof(ProfileFieldsRootObject), (int) HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(string), (int) HttpStatusCode.Unauthorized)]
-        [ProducesResponseType(typeof(ErrorsRootObject), (int) HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(string), (int) HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(ProfileFieldsRootObject), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
         [GetRequestsErrorInterceptorActionFilter]
         public async Task<IActionResult> GetProfileFields(int id, string fields = "")
         {
             if (id <= 0)
                 return await Error(HttpStatusCode.BadRequest, "profile_id", "profile_id is required.");
 
-            var profileFieldDto = await _mediator.Send(new GetProfileFields.Query {ProfileId = id, Fields = fields});
+            var profileFieldDto = await _mediator.Send(new GetProfileFields.Query { ProfileId = id, Fields = fields });
             if (profileFieldDto == null)
                 return await Error(HttpStatusCode.NotFound, "profile_fields", "not found");
 
@@ -102,17 +102,17 @@ namespace EdmsMockApi.Features.Students
         /// <response code="401">Unauthorized</response>
         [HttpGet]
         [Route("get-profile-by-id/{id}", Name = nameof(GetProfileById))]
-        [ProducesResponseType(typeof(ProfilesRootObject), (int) HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(string), (int) HttpStatusCode.Unauthorized)]
-        [ProducesResponseType(typeof(ErrorsRootObject), (int) HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(string), (int) HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(ProfilesRootObject), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.NotFound)]
         [GetRequestsErrorInterceptorActionFilter]
         public async Task<IActionResult> GetProfileById(int id, string fields = "")
         {
             if (id <= 0)
                 return await Error(HttpStatusCode.BadRequest, "id", "invalid profile id");
 
-            var profileDto = await _mediator.Send(new GetProfileById.Query {Id = id, Fields = fields});
+            var profileDto = await _mediator.Send(new GetProfileById.Query { Id = id, Fields = fields });
             if (profileDto == null)
                 return await Error(HttpStatusCode.NotFound, "profile", "not found");
 
@@ -133,9 +133,9 @@ namespace EdmsMockApi.Features.Students
         /// <response code="401">Unauthorized</response>
         [HttpGet]
         [Route("login", Name = nameof(Login))]
-        [ProducesResponseType(typeof(LoginRootObject), (int) HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ErrorsRootObject), (int) HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(string), (int) HttpStatusCode.Unauthorized)]
+        [ProducesResponseType(typeof(LoginRootObject), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
         [GetRequestsErrorInterceptorActionFilter]
         public async Task<IActionResult> Login([FromQuery] Login.Query query)
         {
@@ -144,6 +144,56 @@ namespace EdmsMockApi.Features.Students
             var rootObject = new LoginRootObject
             {
                 Status = result
+            };
+
+            return Ok(rootObject);
+        }
+
+        /// <summary>
+        /// Export document to E-DMS server
+        /// </summary>
+        /// <param name="command">Query parameters to contain on json</param>
+        /// <response code="200">OK</response>
+        /// <response code="400">Bad Request</response>
+        /// <response code="401">Unauthorized</response>
+        [HttpPost]
+        [Route("export", Name = nameof(Export))]
+        [ProducesResponseType(typeof(ExportRootObject), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
+        [GetRequestsErrorInterceptorActionFilter]
+        public async Task<IActionResult> Export([FromBody] Export.Command command)
+        {
+            var result = await _mediator.Send(command);
+
+            var rootObject = new ExportRootObject
+            {
+                ExportResult = result
+            };
+
+            return Ok(rootObject);
+        }
+
+        /// <summary>
+        /// Download single document from E-DMS server
+        /// </summary>
+        /// <param name="query">Query parameters to contain on json</param>
+        /// <response code="200">OK</response>
+        /// <response code="400">Bad Request</response>
+        /// <response code="401">Unauthorized</response>
+        [HttpGet]
+        [Route("download", Name = nameof(Download))]
+        [ProducesResponseType(typeof(DownloadRootObject), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
+        [GetRequestsErrorInterceptorActionFilter]
+        public async Task<IActionResult> Download([FromQuery] Download.Query query)
+        {
+            var result = await _mediator.Send(query);
+
+            var rootObject = new DownloadRootObject
+            {
+                Download = result
             };
 
             return Ok(rootObject);
@@ -160,9 +210,9 @@ namespace EdmsMockApi.Features.Students
         /// <response code="401">Unauthorized</response>
         [HttpGet]
         [Route("search", Name = nameof(GetSearch))]
-        [ProducesResponseType(typeof(DataProfilesRootObject), (int) HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ErrorsRootObject), (int) HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(string), (int) HttpStatusCode.Unauthorized)]
+        [ProducesResponseType(typeof(DataProfilesRootObject), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
         [GetRequestsErrorInterceptorActionFilter]
         public async Task<IActionResult> GetSearch([FromQuery] Search.Query query)
         {
@@ -193,9 +243,9 @@ namespace EdmsMockApi.Features.Students
         /// <response code="401">Unauthorized</response>
         [HttpGet]
         [Route("search-by-doc", Name = nameof(GetSearchByDoc))]
-        [ProducesResponseType(typeof(DataProfilesRootObject), (int) HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ErrorsRootObject), (int) HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(string), (int) HttpStatusCode.Unauthorized)]
+        [ProducesResponseType(typeof(DataProfilesRootObject), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
         [GetRequestsErrorInterceptorActionFilter]
         public async Task<IActionResult> GetSearchByDoc([FromQuery] SearchByDoc.Query query)
         {
@@ -226,9 +276,9 @@ namespace EdmsMockApi.Features.Students
         /// <response code="401">Unauthorized</response>
         [HttpGet]
         [Route("profile-search", Name = nameof(GetProfileSearch))]
-        [ProducesResponseType(typeof(DataProfilesRootObject), (int) HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ErrorsRootObject), (int) HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(string), (int) HttpStatusCode.Unauthorized)]
+        [ProducesResponseType(typeof(DataProfilesRootObject), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorsRootObject), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(string), (int)HttpStatusCode.Unauthorized)]
         [GetRequestsErrorInterceptorActionFilter]
         public async Task<IActionResult> GetProfileSearch([FromQuery] ProfileSearch.Query query)
         {

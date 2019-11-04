@@ -15,9 +15,9 @@ namespace EdmsMockApi.Infrastructure.Mapper
         {
             CreateProfileFieldMap();
             CreateProfileMap();
-
             CreateDataColumnMap();
             CreateDataProfileMap();
+            CreateDownloadResponseMap();
         }
 
         private new static void CreateMap<TSource, TDestination>()
@@ -28,7 +28,7 @@ namespace EdmsMockApi.Infrastructure.Mapper
 
         private static void CreateProfileFieldMap()
         {
-            CreateMap<ProfileField, ProfileFieldDto>();    
+            CreateMap<ProfileField, ProfileFieldDto>();
         }
 
         private static void CreateProfileMap()
@@ -49,6 +49,15 @@ namespace EdmsMockApi.Infrastructure.Mapper
             AutoMapperApiConfiguration.MapperConfigurationExpression.CreateMap<DataProfileResult, DataProfileDto>()
                 .IgnoreAllNonExisting()
                 .ForMember(x => x.DataColumns, y => y.MapFrom(src => src.Arr_DataValue.Select(x => x.ToDto())));
+        }
+
+        private static void CreateDownloadResponseMap()
+        {
+            AutoMapperApiConfiguration.MapperConfigurationExpression.CreateMap<DownloadResponseBody, DownloadDto>()
+            .IgnoreAllNonExisting()
+            .ForMember(x => x.Result, y => y.MapFrom(src => src.DownloadResult))
+            .ForMember(x => x.FileName, y => y.MapFrom(src => src.FileName))
+            .ForMember(x => x.Content, y => y.MapFrom(src => src.FileContent));
         }
     }
 }

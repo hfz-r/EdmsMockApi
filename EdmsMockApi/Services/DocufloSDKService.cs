@@ -15,9 +15,12 @@ namespace EdmsMockApi.Services
             _configuration = configuration;
         }
 
-        public async Task<DocufloSDKSoap> Connect()
+        private async Task<DocufloSDKSoap> Connect()
         {
             var binding = new BasicHttpBinding();
+            binding.MaxReceivedMessageSize = 64000000;
+            binding.MaxBufferSize = 64000000;
+
             var endpoint = new EndpointAddress(_configuration.GetSection("DocufloSDKEndPoint").Value);
 
             var factory = new ChannelFactory<DocufloSDKSoap>(binding, endpoint);
@@ -38,7 +41,7 @@ namespace EdmsMockApi.Services
             var responseResult = (await client.SearchAsync(request))?.Body?.SearchResult;
 
             if (responseResult?.Length > 0)
-                ((IClientChannel) client).Close();
+                ((IClientChannel)client).Close();
 
             return responseResult;
         }
@@ -60,7 +63,7 @@ namespace EdmsMockApi.Services
             var responseResult = response?.ProfileSearchResult;
 
             if (responseResult?.Length > 0)
-                ((IClientChannel) client).Close();
+                ((IClientChannel)client).Close();
 
             return responseResult;
         }
@@ -77,7 +80,7 @@ namespace EdmsMockApi.Services
             var responseResult = (await client.SearchByDocIDAsync(request))?.Body?.SearchByDocIDResult;
 
             if (responseResult?.Length > 0)
-                ((IClientChannel) client).Close();
+                ((IClientChannel)client).Close();
 
             return responseResult;
         }
@@ -95,7 +98,41 @@ namespace EdmsMockApi.Services
                                  (await client.LoginAsync(request))?.Body.userID;
 
             if (!string.IsNullOrEmpty(responseResult))
-                ((IClientChannel) client).Close();
+                ((IClientChannel)client).Close();
+
+            return responseResult;
+        }
+
+        public async Task<string> Export(ExportRequestBody requestBody)
+        {
+            var request = new ExportRequest
+            {
+                Body = requestBody
+            };
+
+            var client = await Connect();
+
+            var responseResult = (await client.ExportAsync(request))?.Body?.ExportResult;
+
+            if (responseResult?.Length > 0)
+                ((IClientChannel)client).Close();
+
+            return responseResult;
+        }
+
+        public async Task<DownloadResponseBody> Download(DownloadRequestBody requestBody)
+        {
+            var request = new DownloadRequest
+            {
+                Body = requestBody
+            };
+
+            var client = await Connect();
+
+            var responseResult = (await client.DownloadAsync(request))?.Body;
+
+            if (responseResult != null && !string.IsNullOrEmpty(responseResult.DownloadResult))
+                ((IClientChannel)client).Close();
 
             return responseResult;
         }

@@ -16,5 +16,7 @@ namespace EdmsMockApi.Helpers
         DataProfileDto PrepareDataProfileDto(DataProfileResult dataProfile);
 
         DataColumnDto PrepareDataColumnDto(DataColumn dataColumn);
+
+        DownloadDto PrepareDownloadDto(DownloadResponseBody responseBody);
     }
 }

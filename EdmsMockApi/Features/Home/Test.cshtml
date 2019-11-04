@@ -1,0 +1,23 @@
+@model EdmsMockApi.Models.ExportViewModel
+
+@{ ViewData["Title"] = "Test Page"; }
+
+<div class="col-6">
+    <h1>Export</h1>
+
+    <form asp-action="Test" enctype="multipart/form-data">
+        <div class="form-group">
+            <label asp-for="FileContent" class="control-label"></label>
+            <input asp-for="FileContent" type="file" class="form-control-file">
+            <span asp-validation-for="FileContent" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="FileName" class="control-label"></label>
+            <input asp-for="FileName" class="form-control"/>
+            <span asp-validation-for="FileName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Save" class="btn btn-primary"/>
+        </div>
+    </form>
+</div>

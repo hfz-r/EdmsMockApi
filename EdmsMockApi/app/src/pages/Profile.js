@@ -47,9 +47,10 @@ export const Profile = () => {
               <thead>
                 <tr>
                   <th>Image #</th>
-                  <th>Version</th>
+                  {/* <th>Version</th> */}
                   <th>Type</th>
-                  <th>doc_id</th>
+                  <th>Doc Id</th>
+                  <th>#</th>
                 </tr>
               </thead>
               <tbody>

@@ -3,6 +3,7 @@ import Model from '../model';
 import { Navigation } from '../components/Navigation';
 import { Profile } from './Profile';
 import { Search } from './Search';
+import { Export } from './Export';
 
 export const Content = () => {
   const contents = [
@@ -13,11 +14,17 @@ export const Content = () => {
       txt2: Model.payload.details.length,
       body: () => <Profile />
     },
+    // {
+    //   title: 'Advanced Search',
+    //   icon: 'fa fa-search-plus',
+    //   style: 'style1',
+    //   body: () => <Search open={true} />
+    // }
     {
-      title: 'Advanced Search',
-      icon: 'fa fa-search-plus',
+      title: 'Export',
+      icon: 'fa fa-upload',
       style: 'style1',
-      body: () => <Search open={true} />
+      body: () => <Export />
     }
   ];
 

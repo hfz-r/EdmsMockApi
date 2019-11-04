@@ -46,5 +46,12 @@ namespace EdmsMockApi.Helpers
 
             return dataColumnDto;
         }
+
+        public DownloadDto PrepareDownloadDto(DownloadResponseBody responseBody)
+        {
+            var downloadDto = responseBody.ToDto();
+
+            return downloadDto;
+        }
     }
 }
